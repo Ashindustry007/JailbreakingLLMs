@@ -53,6 +53,14 @@ jailbreakchat templates applied once each (no iteration).
 | GPT-3.5-Turbo | ≈ 12 s | ≈ $0.038 |
 | GPT-4o | ≈ 21 s | ≈ $0.078 |
 
+**Table 3 — Transferability:** % of a source model's successful jailbreak
+prompts that *also* jailbreak a downstream model when replayed once (no
+iteration). Same-model cell omitted, per the paper.
+
+| Method | Source (original target) | → GPT-3.5 | → GPT-4o |
+|--------|--------------------------|:---------:|:--------:|
+| PAIR (ours) | GPT-4o | **45.7%** (16/35) | — |
+
 ## Brief Conclusions
 
 1. **PAIR reproduces.** Black-box semantic-reframing jailbreaks succeed on both
@@ -71,6 +79,10 @@ jailbreakchat templates applied once each (no iteration).
    7.8% Avg on GPT-3.5 and **0% on GPT-4o**, vs PAIR's 80% / 70%. Adaptivity —
    refining against the target's refusals — is what defeats alignment; fixed
    public templates have aged out of modern models (GPT-4o blocks all 9).
+6. **Jailbreaks transfer downstream.** 45.7% of the prompts crafted against
+   GPT-4o still jailbreak GPT-3.5 unchanged — prompts tuned on a stronger model
+   carry over to a weaker one without any re-optimization, echoing the paper's
+   transferability finding (GPT-4 → GPT-3.5 = 65% there).
 
 > **Caveats.** Judge **and** attacker differ from the paper (Qwen for Mixtral,
 > Llama-Guard-4 for GPT-4 / Llama-Guard-1), so these numbers are **not** directly
