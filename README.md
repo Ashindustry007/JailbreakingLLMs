@@ -6,8 +6,6 @@ A reproduction of **PAIR** (Prompt Automatic Iterative Refinement; [Chao et al.,
 currently-callable models. The PAIR algorithm is **unchanged** — only the
 paper's retired model endpoints are swapped for available ones.
 
-Full analysis and per-table breakdown: [`RESULT.md`](RESULT.md).
-
 ## Core Configuration
 
 | Role | Model | Provider |
