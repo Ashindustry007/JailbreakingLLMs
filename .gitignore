@@ -17,5 +17,5 @@ results/
 # Local analysis write-up (not committed)
 RESULT.md
 
-# Reference paper PDF (too large for repo)
-Jailbreaking Black Box Large Language Models in Twenty Queries.pdf
+# PDFs (reference paper, proposal) — not committed
+*.pdf
