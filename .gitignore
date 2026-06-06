@@ -12,3 +12,4 @@ __pycache__/
 # Experiment outputs
 wandb/
 logs/
+results/
