@@ -131,6 +131,8 @@ class LlamaGuard4Judge(JudgeBase):
             api_key=self.api_key,
             temperature=0,
             max_tokens=20,
+            timeout=60,        # fail a hung request fast instead of blocking forever
+            num_retries=3,     # then retry; a single stuck call must not deadlock the batch
         )
         scores = []
         for output in outputs:

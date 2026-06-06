@@ -88,6 +88,7 @@ class APILiteLLM(LanguageModel):
             num_retries=self.API_MAX_RETRY,
             seed=0,
             stop=eos_tokens,
+            timeout=60,        # fail a hung request fast instead of blocking forever
         )
         
         responses = [output["choices"][0]["message"].content for output in outputs]

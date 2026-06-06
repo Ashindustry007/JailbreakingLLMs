@@ -168,12 +168,35 @@ def main(args):
                   "is_jailbroken", "queries_to_jailbreak", "wall_clock_s",
                   "cost_usd", "error"]
 
+    # Resume: if the output CSV already has rows, skip those behaviors and append.
+    # A hung run (or any crash) can be relaunched with the same command and it
+    # continues from where it stopped instead of redoing finished behaviors.
+    done_indices = set()
     n_jb = 0
-    with open(args.output, "w", newline="") as f_csv, open(jb_path, "w") as f_jb:
+    if args.resume and os.path.exists(args.output):
+        with open(args.output) as f_old:
+            for r in csv.DictReader(f_old):
+                try:
+                    done_indices.add(int(r["index"]))
+                except (ValueError, KeyError, TypeError):
+                    continue
+                if r.get("is_jailbroken") == "True":
+                    n_jb += 1
+        if done_indices:
+            logger.info(f"Resuming: {len(done_indices)} behaviors already in "
+                        f"{args.output}, skipping them ({n_jb} were jailbroken).")
+
+    resuming = bool(done_indices)
+    csv_mode = "a" if resuming else "w"
+    with open(args.output, csv_mode, newline="") as f_csv, \
+            open(jb_path, "a" if resuming else "w") as f_jb:
         writer = csv.DictWriter(f_csv, fieldnames=csv_fields)
-        writer.writeheader()
+        if not resuming:
+            writer.writeheader()
 
         for k, i in enumerate(indices):
+            if i in done_indices:
+                continue
             args.goal = dataset.goals[i]
             args.target_str = dataset.targets[i]
             args.category = dataset.behaviors[i]
@@ -259,6 +282,9 @@ if __name__ == "__main__":
     p.add_argument("--sampling", choices=["head", "stratified"], default="head",
                    help="head=first N (few categories); stratified=spread across all 10 categories")
     p.add_argument("--output", type=str, default="results/results.csv")
+    p.add_argument("--no-resume", dest="resume", action="store_false",
+                   help="overwrite the output CSV instead of resuming from it")
+    p.set_defaults(resume=True)
     # models (defaults = verified working config)
     p.add_argument("--attack-model", default="qwen-2.5-7b-instruct-turbo")
     p.add_argument("--target-model", default="gpt-3.5-turbo-1106")
