@@ -13,3 +13,6 @@ __pycache__/
 wandb/
 logs/
 results/
+
+# Reference paper PDF (too large for repo)
+Jailbreaking Black Box Large Language Models in Twenty Queries.pdf
