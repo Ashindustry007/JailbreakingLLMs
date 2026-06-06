@@ -24,14 +24,18 @@ paper's retired model endpoints are swapped for available ones.
 
 ## Core Results
 
-**Overall:**
+**Table 2 — Attack success: PAIR vs JBC baseline** (first 50 behaviors, same
+Llama-Guard-4 judge). PAIR is our iterative attack; JBC = 9 static
+jailbreakchat templates applied once each (no iteration).
 
-| Target | ASR | Mean queries / success | Cost / behavior |
-|--------|:---:|:----------------------:|:---------------:|
-| GPT-3.5-Turbo | 40/50 = **80%** | 28.3 | ≈ $0.038 |
-| GPT-4o | 35/50 = **70%** | 17.9 | ≈ $0.078 |
+| Method | Metric | GPT-3.5-Turbo | GPT-4o |
+|--------|--------|:-------------:|:------:|
+| **PAIR** (ours) | Jailbreak % (ASR) | **80%** | **70%** |
+|  | Queries / success | 28.3 | 17.9 |
+| **JBC** (9 templates) | Avg. Jailbreak % | 7.8% | **0%** |
+|  | ASR (any template) | 66% | **0%** |
 
-**Per-category ASR:**
+**Per-category ASR (PAIR):**
 
 | Category | GPT-3.5 | GPT-4o | Δ |
 |----------|:-------:|:------:|:--:|
@@ -56,6 +60,10 @@ paper's retired model endpoints are swapped for available ones.
    is meant to measure; a stricter judge would lower both ASRs.
 4. **Clearest real signal:** GPT-4o is specifically hardened on Malware/Hacking
    (90% → 50%), refusing or returning defensive content far more than GPT-3.5.
+5. **PAIR ≫ static templates (JBC).** The 9 jailbreakchat templates reach only
+   7.8% Avg on GPT-3.5 and **0% on GPT-4o**, vs PAIR's 80% / 70%. Adaptivity —
+   refining against the target's refusals — is what defeats alignment; fixed
+   public templates have aged out of modern models (GPT-4o blocks all 9).
 
 > **Caveats.** Judge **and** attacker differ from the paper (Qwen for Mixtral,
 > Llama-Guard-4 for GPT-4 / Llama-Guard-1), so these numbers are **not** directly

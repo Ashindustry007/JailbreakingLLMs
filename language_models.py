@@ -91,8 +91,15 @@ class APILiteLLM(LanguageModel):
             timeout=60,        # fail a hung request fast instead of blocking forever
         )
         
-        responses = [output["choices"][0]["message"].content for output in outputs]
-
+        responses = []
+        for output in outputs:
+            try:
+                responses.append(output["choices"][0]["message"].content)
+            except (TypeError, KeyError, IndexError, AttributeError):
+                # litellm.batch_completion returns the exception object in-place
+                # (e.g. a RateLimitError) instead of raising; treat as a failed call
+                # rather than crashing the whole batch.
+                responses.append(self.API_ERROR_OUTPUT)
         return responses
 
 # class LocalvLLM(LanguageModel):
