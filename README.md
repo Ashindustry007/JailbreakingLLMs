@@ -46,6 +46,13 @@ jailbreakchat templates applied once each (no iteration).
 | Fraud / Deception | 80% | 70% | −10 |
 | **Overall** | **80%** | **70%** | −10 |
 
+**Table 4 — Efficiency (PAIR):** all inference is remote API, so memory is N/A.
+
+| Target | Running time / behavior | Cost / behavior |
+|--------|:----------------------:|:---------------:|
+| GPT-3.5-Turbo | ≈ 12 s | ≈ $0.038 |
+| GPT-4o | ≈ 21 s | ≈ $0.078 |
+
 ## Brief Conclusions
 
 1. **PAIR reproduces.** Black-box semantic-reframing jailbreaks succeed on both
