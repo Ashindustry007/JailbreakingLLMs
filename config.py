@@ -14,10 +14,12 @@ class Model(Enum):
     llama_2 = "llama-2-7b-chat-hf"
     gpt_3_5 = "gpt-3.5-turbo-1106"
     gpt_4 = "gpt-4-0125-preview"
+    gpt_4o = "gpt-4o-2024-11-20"
     claude_1 = "claude-instant-1.2"
     claude_2 = "claude-2.1"
     gemini = "gemini-pro"
     mixtral = "mixtral"
+    qwen_2_5_7b = "qwen-2.5-7b-instruct-turbo"
 
 MODEL_NAMES = [model.value for model in Model]
 
@@ -34,26 +36,38 @@ TOGETHER_MODEL_NAMES: dict[Model, str] = {
     Model.mixtral: "together_ai/mistralai/Mixtral-8x7B-Instruct-v0.1"
 }
 
+# Together.ai chat models that use the provider's own (server-side) chat template.
+# Unlike TOGETHER_MODEL_NAMES, these do NOT register a custom litellm prompt
+# template (use_open_source_model stays False) — we just send OpenAI-format
+# messages and let Together apply the model's chat template.
+TOGETHER_CHAT_MODEL_NAMES: dict[Model, str] = {
+    Model.qwen_2_5_7b: "together_ai/Qwen/Qwen2.5-7B-Instruct-Turbo",
+}
+
 FASTCHAT_TEMPLATE_NAMES: dict[Model, str] = {
     Model.gpt_3_5: "gpt-3.5-turbo",
     Model.gpt_4: "gpt-4",
+    Model.gpt_4o: "gpt-4",
     Model.claude_1: "claude-instant-1.2",
     Model.claude_2: "claude-2.1",
     Model.gemini: "gemini-pro",
     Model.vicuna: "vicuna_v1.1",
     Model.llama_2: "llama-2-7b-chat-hf",
     Model.mixtral: "mixtral",
+    Model.qwen_2_5_7b: "qwen-7b-chat",
 }
 
 API_KEY_NAMES: dict[Model, str] = {
     Model.gpt_3_5:  "OPENAI_API_KEY",
     Model.gpt_4:    "OPENAI_API_KEY",
+    Model.gpt_4o:   "OPENAI_API_KEY",
     Model.claude_1: "ANTHROPIC_API_KEY",
     Model.claude_2: "ANTHROPIC_API_KEY",
     Model.gemini:   "GEMINI_API_KEY",
     Model.vicuna:   "TOGETHER_API_KEY",
     Model.llama_2:  "TOGETHER_API_KEY",
     Model.mixtral:  "TOGETHER_API_KEY",
+    Model.qwen_2_5_7b: "TOGETHER_API_KEY",
 }
 
 LITELLM_TEMPLATES: dict[Model, dict] = {

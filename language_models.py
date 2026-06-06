@@ -1,6 +1,6 @@
 import os 
 import litellm
-from config import TOGETHER_MODEL_NAMES, LITELLM_TEMPLATES, API_KEY_NAMES, Model
+from config import TOGETHER_MODEL_NAMES, TOGETHER_CHAT_MODEL_NAMES, LITELLM_TEMPLATES, API_KEY_NAMES, Model
 from loggers import logger
 from common import get_api_key
 
@@ -32,6 +32,11 @@ class APILiteLLM(LanguageModel):
         if model_name in TOGETHER_MODEL_NAMES:
             litellm_name = TOGETHER_MODEL_NAMES[model_name]
             self.use_open_source_model = True
+        elif model_name in TOGETHER_CHAT_MODEL_NAMES:
+            # Together chat model: send OpenAI-format messages, let the provider
+            # apply its chat template (no custom litellm template registration).
+            litellm_name = TOGETHER_CHAT_MODEL_NAMES[model_name]
+            self.use_open_source_model = False
         else:
             self.use_open_source_model =  False
             #if self.use_open_source_model:
