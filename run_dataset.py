@@ -19,13 +19,69 @@ import csv
 import json
 import os
 import time
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
+import litellm
 from judges import load_judge
 from conversers import load_attack_and_target_models
 from common import process_target_response, initialize_conversations
 from loggers import logger
 from jailbreakbench import read_dataset
+
+
+# --- Cost tracking ---------------------------------------------------------
+# A litellm success callback accumulates token usage for every API call across
+# all three roles (attacker, target, judge). Cost is computed from token counts
+# x a local price table, so it does not depend on litellm's (old) cost map.
+# Prices are USD per 1M tokens (input, output); edit to match current rates.
+TOKEN_PRICES = {
+    "gpt-4o":         (2.50, 10.00),   # OpenAI
+    "gpt-3.5-turbo":  (0.50, 1.50),    # OpenAI
+    "Qwen2.5-7B":     (0.30, 0.30),    # Together
+    "Llama-Guard-4":  (0.20, 0.20),    # Together
+    "Llama-3.3-70B":  (0.88, 0.88),    # Together
+}
+_DEFAULT_PRICE = (0.0, 0.0)
+_usage = defaultdict(lambda: [0, 0])  # model -> [prompt_tokens, completion_tokens]
+
+
+def _price_for(model):
+    for key, price in TOKEN_PRICES.items():
+        if key.lower() in (model or "").lower():
+            return price
+    return _DEFAULT_PRICE
+
+
+def _cost_callback(kwargs, completion_response, start_time, end_time):
+    try:
+        model = kwargs.get("model", "") or ""
+        usage = getattr(completion_response, "usage", None)
+        if usage is None and isinstance(completion_response, dict):
+            usage = completion_response.get("usage")
+        pt = getattr(usage, "prompt_tokens", None)
+        ct = getattr(usage, "completion_tokens", None)
+        if pt is None and isinstance(usage, dict):
+            pt, ct = usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0)
+        _usage[model][0] += int(pt or 0)
+        _usage[model][1] += int(ct or 0)
+    except Exception:
+        pass  # never let cost tracking break a run
+
+
+def total_cost():
+    total = 0.0
+    for model, (pt, ct) in _usage.items():
+        ip, op = _price_for(model)
+        total += pt / 1e6 * ip + ct / 1e6 * op
+    return total
+
+
+litellm.success_callback = [_cost_callback]
+# litellm prints a "Give Feedback / Get Help" banner whenever it internally
+# catches an exception (then retries via num_retries). The retries succeed, so
+# the banner is just noise — suppress it to keep the progress log readable.
+litellm.suppress_debug_info = True
+# ---------------------------------------------------------------------------
 
 
 def select_indices(dataset, num, sampling):
@@ -109,7 +165,8 @@ def main(args):
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
     jb_path = os.path.splitext(args.output)[0] + ".jailbreaks.jsonl"
     csv_fields = ["index", "behavior", "category", "goal", "target_model",
-                  "is_jailbroken", "queries_to_jailbreak", "wall_clock_s", "error"]
+                  "is_jailbroken", "queries_to_jailbreak", "wall_clock_s",
+                  "cost_usd", "error"]
 
     n_jb = 0
     with open(args.output, "w", newline="") as f_csv, open(jb_path, "w") as f_jb:
@@ -125,6 +182,7 @@ def main(args):
             row = {"index": i, "behavior": dataset.behaviors[i],
                    "category": dataset.categories[i], "goal": dataset.goals[i],
                    "target_model": args.target_model, "error": ""}
+            cost_before = total_cost()
             try:
                 res = run_one_behavior(args, attackLM, targetLM, judgeLM)
                 row["is_jailbroken"] = res["is_jailbroken"]
@@ -150,6 +208,7 @@ def main(args):
                 row["error"] = str(e)[:200]
                 status = f"ERROR: {str(e)[:80]}"
 
+            row["cost_usd"] = round(total_cost() - cost_before, 4)
             writer.writerow(row)
             f_csv.flush()
             logger.info(f"[{k+1}/{len(indices)}] {dataset.behaviors[i]} "
@@ -168,12 +227,18 @@ def _print_summary(csv_path):
     jb = [r for r in done if r["is_jailbroken"] == "True"]
     qs = [int(r["queries_to_jailbreak"]) for r in jb if r["queries_to_jailbreak"]]
 
+    costs = [float(r["cost_usd"]) for r in done if r.get("cost_usd")]
     logger.info("=" * 50)
     logger.info(f"Total behaviors run : {len(done)}")
     logger.info(f"Jailbroken (ASR)    : {len(jb)}/{len(done)} "
                 f"({100*len(jb)/max(1,len(done)):.1f}%)")
     if qs:
         logger.info(f"Queries/Success     : {sum(qs)/len(qs):.1f} (mean)")
+    if costs:
+        logger.info(f"Total cost (est.)   : ${sum(costs):.2f}  "
+                    f"(${sum(costs)/len(costs):.3f}/behavior)")
+        for model, (pt, ct) in _usage.items():
+            logger.info(f"    tokens {model}: {pt:,} in / {ct:,} out")
     logger.info("-" * 50)
     logger.info("Per-category ASR (Figure 4):")
     cats = OrderedDict()
