@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="633" height="393" viewBox="0 0 633 393">
+<rect width="100%" height="100%" fill="white"/>
+<text x="26" y="34" font-family="Arial" font-size="20" font-weight="bold">PAIR JB% by Target x Category</text>
+<text x="26" y="56" font-family="Arial" font-size="12" fill="#444">Source: PAIR runs, first 50 JailbreakBench harmful behaviors, N=30, K=3</text>
+<text x="302.5" y="66" text-anchor="middle" font-family="Arial" font-size="13">Gemma-3n</text>
+<text x="437.5" y="66" text-anchor="middle" font-family="Arial" font-size="13">Llama-3-8B</text>
+<text x="223" y="104" text-anchor="end" font-family="Arial" font-size="13">Economic harm</text>
+<rect x="235" y="78" width="135" height="42" fill="rgb(255,90,90)" stroke="#d0d0d0"/>
+<text x="302.5" y="104" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">100</text>
+<rect x="370" y="78" width="135" height="42" fill="rgb(255,121,121)" stroke="#d0d0d0"/>
+<text x="437.5" y="104" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">80</text>
+<text x="223" y="146" text-anchor="end" font-family="Arial" font-size="13">Fraud/Deception</text>
+<rect x="235" y="120" width="135" height="42" fill="rgb(255,90,90)" stroke="#d0d0d0"/>
+<text x="302.5" y="146" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">100</text>
+<rect x="370" y="120" width="135" height="42" fill="rgb(255,90,90)" stroke="#d0d0d0"/>
+<text x="437.5" y="146" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">100</text>
+<text x="223" y="188" text-anchor="end" font-family="Arial" font-size="13">Harassment/Discrimination</text>
+<rect x="235" y="162" width="135" height="42" fill="rgb(255,90,90)" stroke="#d0d0d0"/>
+<text x="302.5" y="188" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">100</text>
+<rect x="370" y="162" width="135" height="42" fill="rgb(255,105,105)" stroke="#d0d0d0"/>
+<text x="437.5" y="188" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">90</text>
+<text x="223" y="230" text-anchor="end" font-family="Arial" font-size="13">Malware/Hacking</text>
+<rect x="235" y="204" width="135" height="42" fill="rgb(255,90,90)" stroke="#d0d0d0"/>
+<text x="302.5" y="230" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">100</text>
+<rect x="370" y="204" width="135" height="42" fill="rgb(255,105,105)" stroke="#d0d0d0"/>
+<text x="437.5" y="230" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">90</text>
+<text x="223" y="272" text-anchor="end" font-family="Arial" font-size="13">Physical harm</text>
+<rect x="235" y="246" width="135" height="42" fill="rgb(255,90,90)" stroke="#d0d0d0"/>
+<text x="302.5" y="272" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">100</text>
+<rect x="370" y="246" width="135" height="42" fill="rgb(255,105,105)" stroke="#d0d0d0"/>
+<text x="437.5" y="272" text-anchor="middle" font-family="Arial" font-size="13" fill="#222">90</text>
+<rect x="535" y="83.0" width="14" height="11.0" fill="rgb(255,90,90)"/>
+<rect x="535" y="93.0" width="14" height="11.0" fill="rgb(255,98,98)"/>
+<rect x="535" y="103.0" width="14" height="11.0" fill="rgb(255,106,106)"/>
+<rect x="535" y="113.0" width="14" height="11.0" fill="rgb(255,114,114)"/>
+<rect x="535" y="123.0" width="14" height="11.0" fill="rgb(255,122,122)"/>
+<rect x="535" y="133.0" width="14" height="11.0" fill="rgb(255,130,130)"/>
+<rect x="535" y="143.0" width="14" height="11.0" fill="rgb(255,138,138)"/>
+<rect x="535" y="153.0" width="14" height="11.0" fill="rgb(255,147,147)"/>
+<rect x="535" y="163.0" width="14" height="11.0" fill="rgb(255,155,155)"/>
+<rect x="535" y="173.0" width="14" height="11.0" fill="rgb(255,163,163)"/>
+<rect x="535" y="183.0" width="14" height="11.0" fill="rgb(255,171,171)"/>
+<rect x="535" y="193.0" width="14" height="11.0" fill="rgb(255,179,179)"/>
+<rect x="535" y="203.0" width="14" height="11.0" fill="rgb(255,187,187)"/>
+<rect x="535" y="213.0" width="14" height="11.0" fill="rgb(255,196,196)"/>
+<rect x="535" y="223.0" width="14" height="11.0" fill="rgb(255,204,204)"/>
+<rect x="535" y="233.0" width="14" height="11.0" fill="rgb(255,212,212)"/>
+<rect x="535" y="243.0" width="14" height="11.0" fill="rgb(255,220,220)"/>
+<rect x="535" y="253.0" width="14" height="11.0" fill="rgb(255,228,228)"/>
+<rect x="535" y="263.0" width="14" height="11.0" fill="rgb(255,236,236)"/>
+<rect x="535" y="273.0" width="14" height="11.0" fill="rgb(255,245,245)"/>
+<rect x="535" y="83" width="14" height="200" fill="none" stroke="#333"/>
+<text x="557" y="87" font-family="Arial" font-size="12">100</text>
+<text x="557" y="283" font-family="Arial" font-size="12">0</text>
+<text x="577" y="183.0" transform="rotate(-90 577 183.0)" font-family="Arial" font-size="13">Jailbreak %</text>
+</svg>

@@ -1,4 +1,4 @@
-"""Run the PAIR portion of Table 2 against the Llama-2 target model."""
+"""Run the PAIR Table 2-style pipeline against Together-hosted target models."""
 
 from __future__ import annotations
 
@@ -13,6 +13,8 @@ from pathlib import Path
 
 import jailbreakbench as jbb
 
+from config import MODEL_NAMES
+
 
 FIRST_JAILBREAK_RE = re.compile(r"First Jailbreak: (\d+) Queries")
 
@@ -20,8 +22,7 @@ FIRST_JAILBREAK_RE = re.compile(r"First Jailbreak: (\d+) Queries")
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Run PAIR with Mixtral as the attacker, Llama-2 as the target, and "
-            "the JailbreakBench classifier as the judge."
+            "Run PAIR with a Together-hosted attacker/target and a configurable judge."
         )
     )
     parser.add_argument(
@@ -48,6 +49,37 @@ def parse_args() -> argparse.Namespace:
         help="JailbreakBench logging phase. --full always uses test.",
     )
     parser.add_argument(
+        "--attack-model",
+        choices=MODEL_NAMES,
+        default="mixtral",
+        help="Attacker model. Paper Table 2 uses mixtral.",
+    )
+    parser.add_argument(
+        "--target-model",
+        choices=MODEL_NAMES,
+        default="llama-2-7b-chat-hf",
+        help="Target model. Paper Table 2 includes llama-2-7b-chat-hf and vicuna-13b-v1.5.",
+    )
+    parser.add_argument(
+        "--judge-model",
+        choices=MODEL_NAMES + ["no-judge", "jailbreakbench", "gcg"],
+        default="jailbreakbench",
+        help="Judge model. Paper Table 2 uses jailbreakbench (Llama Guard).",
+    )
+    parser.add_argument("--n-streams", type=int, default=30)
+    parser.add_argument("--n-iterations", type=int, default=3)
+    parser.add_argument("--attack-max-n-tokens", type=int, default=500)
+    parser.add_argument("--target-max-n-tokens", type=int, default=150)
+    parser.add_argument("--judge-max-n-tokens", type=int, default=64)
+    parser.add_argument(
+        "--not-jailbreakbench-target",
+        action="store_true",
+        help=(
+            "Use direct LiteLLM/Together calls for the target instead of the "
+            "JailbreakBench target wrapper. Use this for non-JBB targets such as Gemma."
+        ),
+    )
+    parser.add_argument(
         "--resume",
         action="store_true",
         help="Skip behaviors that already completed successfully in the status file.",
@@ -68,6 +100,11 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help="Directory for per-behavior logs and status.jsonl.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate and print the experiment configuration without API requests.",
     )
     return parser.parse_args()
 
@@ -195,7 +232,7 @@ def print_summary(status_path: Path, selected_indices: set[int]) -> None:
         if record.get("queries_to_jailbreak") is not None
     ]
 
-    print("\n=== Table 2 Llama-2 PAIR Summary ===")
+    print("\n=== Together PAIR Summary ===")
     print(f"Completed behaviors: {len(selected_records)}/{len(selected_indices)}")
     if selected_records:
         rate = 100 * len(jailbroken) / len(selected_records)
@@ -230,10 +267,18 @@ def main() -> int:
     completed_indices = load_completed_indices(status_path) if args.resume else set()
     main_py = Path(__file__).resolve().parent / "main.py"
 
+    print("Experiment type: PAIR Table 2-style Together run")
+    print(f"Attacker: {args.attack_model}")
+    print(f"Target: {args.target_model}")
+    print(f"Judge: {args.judge_model}")
+    print(f"PAIR budget: {args.n_streams} streams x {args.n_iterations} iterations")
     print(f"Dataset rows: {args.start_index} through {stop_index - 1}")
     print(f"JailbreakBench phase: {phase}")
     print(f"W&B mode: {args.wandb_mode}")
     print(f"Logs: {log_dir}")
+    if args.dry_run:
+        print("Dry run complete. No API requests were made.")
+        return 0
 
     for index in range(args.start_index, stop_index):
         if index in completed_indices:
@@ -248,19 +293,21 @@ def main() -> int:
             sys.executable,
             str(main_py),
             "--attack-model",
-            "mixtral",
+            args.attack_model,
             "--target-model",
-            "llama-2-7b-chat-hf",
+            args.target_model,
             "--judge-model",
-            "jailbreakbench",
+            args.judge_model,
             "--n-streams",
-            "30",
+            str(args.n_streams),
             "--n-iterations",
-            "3",
+            str(args.n_iterations),
             "--attack-max-n-tokens",
-            "500",
+            str(args.attack_max_n_tokens),
             "--target-max-n-tokens",
-            "150",
+            str(args.target_max_n_tokens),
+            "--judge-max-n-tokens",
+            str(args.judge_max_n_tokens),
             "--jailbreakbench-phase",
             phase,
             "--goal",
@@ -273,6 +320,8 @@ def main() -> int:
             str(index),
             "-v",
         ]
+        if args.not_jailbreakbench_target:
+            command.append("--not-jailbreakbench")
 
         print(f"\nRUN {index}: {behavior}")
         started_at = utc_now()
@@ -283,6 +332,13 @@ def main() -> int:
             "behavior": behavior,
             "category": str(row["Category"]),
             "phase": phase,
+            "attack_model": args.attack_model,
+            "target_model": args.target_model,
+            "judge_model": args.judge_model,
+            "n_streams": args.n_streams,
+            "n_iterations": args.n_iterations,
+            "use_jailbreakbench_target": not args.not_jailbreakbench_target,
+            "judge_max_n_tokens": args.judge_max_n_tokens,
             "returncode": returncode,
             "jailbroken": jailbroken,
             "queries_to_jailbreak": queries_to_jailbreak,

@@ -18,6 +18,12 @@ class Model(Enum):
     claude_2 = "claude-2.1"
     gemini = "gemini-pro"
     mixtral = "mixtral"
+    llama_3_3_70b_turbo = "llama-3.3-70b-instruct-turbo"
+    gemma_4_31b_it = "gemma-4-31b-it"
+    gemma_3n_e4b_it = "gemma-3n-e4b-it"
+    llama_3_8b_instruct_lite = "llama-3-8b-instruct-lite"
+    qwen_2_5_7b_instruct_turbo = "qwen-2.5-7b-instruct-turbo"
+    llama_guard_4_12b = "llama-guard-4-12b"
     ucsd_mistral_small = "api-mistral-small-3.2-2506"
     ucsd_mistral_large = "mistral.mistral-large-3-675b-instruct"
     ucsd_deepseek = "api-deepseek-v4-flash"
@@ -30,13 +36,25 @@ MODEL_NAMES = [model.value for model in Model]
 HF_MODEL_NAMES: dict[Model, str] = {
     Model.llama_2: "meta-llama/Llama-2-7b-chat-hf",
     Model.vicuna: "lmsys/vicuna-13b-v1.5",
-    Model.mixtral: "mistralai/Mixtral-8x7B-Instruct-v0.1"
+    Model.mixtral: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    Model.llama_3_3_70b_turbo: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    Model.gemma_4_31b_it: "google/gemma-4-31B-it",
+    Model.gemma_3n_e4b_it: "google/gemma-3n-E4B-it",
+    Model.llama_3_8b_instruct_lite: "meta-llama/Meta-Llama-3-8B-Instruct-Lite",
+    Model.qwen_2_5_7b_instruct_turbo: "Qwen/Qwen2.5-7B-Instruct-Turbo",
+    Model.llama_guard_4_12b: "meta-llama/Llama-Guard-4-12B",
 }
 
 TOGETHER_MODEL_NAMES: dict[Model, str] = {
-    Model.llama_2: "together_ai/togethercomputer/llama-2-7b-chat",
+    Model.llama_2: "together_ai/meta-llama/Llama-2-7b-chat-hf",
     Model.vicuna: "together_ai/lmsys/vicuna-13b-v1.5",
-    Model.mixtral: "together_ai/mistralai/Mixtral-8x7B-Instruct-v0.1"
+    Model.mixtral: "together_ai/mistralai/Mixtral-8x7B-Instruct-v0.1",
+    Model.llama_3_3_70b_turbo: "together_ai/meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    Model.gemma_4_31b_it: "together_ai/google/gemma-4-31B-it",
+    Model.gemma_3n_e4b_it: "together_ai/google/gemma-3n-E4B-it",
+    Model.llama_3_8b_instruct_lite: "together_ai/meta-llama/Meta-Llama-3-8B-Instruct-Lite",
+    Model.qwen_2_5_7b_instruct_turbo: "together_ai/Qwen/Qwen2.5-7B-Instruct-Turbo",
+    Model.llama_guard_4_12b: "together_ai/meta-llama/Llama-Guard-4-12B",
 }
 
 OPENAI_COMPATIBLE_MODEL_NAMES: dict[Model, str] = {
@@ -64,6 +82,12 @@ FASTCHAT_TEMPLATE_NAMES: dict[Model, str] = {
     Model.vicuna: "vicuna_v1.1",
     Model.llama_2: "llama-2-7b-chat-hf",
     Model.mixtral: "mixtral",
+    Model.llama_3_3_70b_turbo: "llama-3",
+    Model.gemma_4_31b_it: "gemma",
+    Model.gemma_3n_e4b_it: "gemma",
+    Model.llama_3_8b_instruct_lite: "llama-3",
+    Model.qwen_2_5_7b_instruct_turbo: "qwen-7b-chat",
+    Model.llama_guard_4_12b: "llama-3",
     Model.ucsd_mistral_small: "gpt-3.5-turbo",
     Model.ucsd_mistral_large: "gpt-3.5-turbo",
     Model.ucsd_deepseek: "gpt-3.5-turbo",
@@ -80,6 +104,12 @@ API_KEY_NAMES: dict[Model, str] = {
     Model.vicuna:   "TOGETHER_API_KEY",
     Model.llama_2:  "TOGETHER_API_KEY",
     Model.mixtral:  "TOGETHER_API_KEY",
+    Model.llama_3_3_70b_turbo: "TOGETHER_API_KEY",
+    Model.gemma_4_31b_it: "TOGETHER_API_KEY",
+    Model.gemma_3n_e4b_it: "TOGETHER_API_KEY",
+    Model.llama_3_8b_instruct_lite: "TOGETHER_API_KEY",
+    Model.qwen_2_5_7b_instruct_turbo: "TOGETHER_API_KEY",
+    Model.llama_guard_4_12b: "TOGETHER_API_KEY",
     Model.ucsd_mistral_small: "OPENAI_API_KEY",
     Model.ucsd_mistral_large: "OPENAI_API_KEY",
     Model.ucsd_deepseek: "OPENAI_API_KEY",
@@ -126,5 +156,23 @@ LITELLM_TEMPLATES: dict[Model, dict] = {
                 "post_message": "</s>",
                 "initial_prompt_value" : "<s>",
                 "eos_tokens": ["</s>", "[/INST]"]
+    },
+    Model.llama_3_3_70b_turbo: {"roles":{
+                    "system": {
+                        "pre_message": "<|start_header_id|>system<|end_header_id|>\n\n",
+                        "post_message": "<|eot_id|>",
+                    },
+                    "user": {
+                        "pre_message": "<|start_header_id|>user<|end_header_id|>\n\n",
+                        "post_message": "<|eot_id|>",
+                    },
+                    "assistant": {
+                        "pre_message": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+                        "post_message": "<|eot_id|>",
+                    },
+                },
+                "post_message": "<|eot_id|>",
+                "initial_prompt_value": "<|begin_of_text|>",
+                "eos_tokens": ["<|eot_id|>"],
     }
 }

@@ -131,9 +131,24 @@ def default_log_dir(args: argparse.Namespace) -> Path:
 def load_api_key(path: Path) -> str:
     expanded_path = path.expanduser()
     if expanded_path.exists():
-        key = expanded_path.read_text(encoding="utf-8").strip()
-        if key:
-            return key
+        keys = [
+            line.strip()
+            for line in expanded_path.read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
+        if keys:
+            key_index = os.environ.get("PAIR_API_KEY_INDEX", "").strip()
+            if key_index:
+                try:
+                    index = int(key_index)
+                except ValueError as exc:
+                    raise ValueError("PAIR_API_KEY_INDEX must be a 1-based integer.") from exc
+                if index < 1 or index > len(keys):
+                    raise ValueError(
+                        f"PAIR_API_KEY_INDEX must be between 1 and {len(keys)}."
+                    )
+                return keys[index - 1]
+            return keys[-1]
         raise ValueError(f"API key file is empty: {expanded_path}")
 
     key = os.environ.get("OPENAI_API_KEY", "").strip()

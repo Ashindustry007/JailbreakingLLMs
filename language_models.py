@@ -63,7 +63,7 @@ class APILiteLLM(LanguageModel):
             )
     
     def set_eos_tokens(self, model_name):
-        if self.use_open_source_model:
+        if self.use_open_source_model and model_name in LITELLM_TEMPLATES:
             self.eos_tokens = LITELLM_TEMPLATES[model_name]["eos_tokens"]     
         else:
             self.eos_tokens = []

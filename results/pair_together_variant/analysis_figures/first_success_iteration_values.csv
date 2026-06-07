@@ -1,0 +1,7 @@
+target_model,target_label,iteration,successful_behaviors
+gemma-3n-e4b-it,Gemma-3n,1,49
+gemma-3n-e4b-it,Gemma-3n,2,1
+gemma-3n-e4b-it,Gemma-3n,3,0
+llama-3-8b-instruct-lite,Llama-3-8B,1,38
+llama-3-8b-instruct-lite,Llama-3-8B,2,5
+llama-3-8b-instruct-lite,Llama-3-8B,3,2

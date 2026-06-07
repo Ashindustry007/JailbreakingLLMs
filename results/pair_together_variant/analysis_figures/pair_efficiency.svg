@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390">
+<rect width="100%" height="100%" fill="white"/>
+<text x="259.0" y="32" text-anchor="middle" font-family="Arial" font-size="14">(a) Cumulative jailbreak success</text>
+<line x1="72" y1="312" x2="446.0" y2="312" stroke="#333"/>
+<line x1="72" y1="50" x2="72" y2="312" stroke="#333"/>
+<text x="259.0" y="354" text-anchor="middle" font-family="Arial" font-size="12">Queries to first jailbreak</text>
+<text x="18" y="181.0" transform="rotate(-90 18 181.0)" text-anchor="middle" font-family="Arial" font-size="12">Cumulative JB% of behaviors</text>
+<line x1="72.0" y1="312" x2="72.0" y2="317" stroke="#333"/>
+<text x="72.0" y="332" text-anchor="middle" font-family="Arial" font-size="11">0</text>
+<line x1="196.66666666666669" y1="312" x2="196.66666666666669" y2="317" stroke="#333"/>
+<text x="196.66666666666669" y="332" text-anchor="middle" font-family="Arial" font-size="11">30</text>
+<line x1="321.33333333333337" y1="312" x2="321.33333333333337" y2="317" stroke="#333"/>
+<text x="321.33333333333337" y="332" text-anchor="middle" font-family="Arial" font-size="11">60</text>
+<line x1="446.0" y1="312" x2="446.0" y2="317" stroke="#333"/>
+<text x="446.0" y="332" text-anchor="middle" font-family="Arial" font-size="11">90</text>
+<line x1="67" y1="312.0" x2="72" y2="312.0" stroke="#333"/>
+<text x="63" y="316.0" text-anchor="end" font-family="Arial" font-size="11">0</text>
+<line x1="67" y1="246.5" x2="72" y2="246.5" stroke="#333"/>
+<text x="63" y="250.5" text-anchor="end" font-family="Arial" font-size="11">25</text>
+<line x1="72" y1="246.5" x2="446.0" y2="246.5" stroke="#e8e8e8"/>
+<line x1="67" y1="181.0" x2="72" y2="181.0" stroke="#333"/>
+<text x="63" y="185.0" text-anchor="end" font-family="Arial" font-size="11">50</text>
+<line x1="72" y1="181.0" x2="446.0" y2="181.0" stroke="#e8e8e8"/>
+<line x1="67" y1="115.5" x2="72" y2="115.5" stroke="#333"/>
+<text x="63" y="119.5" text-anchor="end" font-family="Arial" font-size="11">75</text>
+<line x1="72" y1="115.5" x2="446.0" y2="115.5" stroke="#e8e8e8"/>
+<line x1="67" y1="50.0" x2="72" y2="50.0" stroke="#333"/>
+<text x="63" y="54.0" text-anchor="end" font-family="Arial" font-size="11">100</text>
+<text x="705.0" y="32" text-anchor="middle" font-family="Arial" font-size="14">(b) First-success iteration</text>
+<line x1="518.0" y1="312" x2="892.0" y2="312" stroke="#333"/>
+<line x1="518.0" y1="50" x2="518.0" y2="312" stroke="#333"/>
+<text x="705.0" y="354" text-anchor="middle" font-family="Arial" font-size="12">Iteration of first success</text>
+<text x="473.0" y="181.0" transform="rotate(-90 473.0 181.0)" text-anchor="middle" font-family="Arial" font-size="12"># successful behaviors</text>
+<line x1="513.0" y1="312.0" x2="518.0" y2="312.0" stroke="#333"/>
+<text x="509.0" y="316.0" text-anchor="end" font-family="Arial" font-size="11">0</text>
+<line x1="513.0" y1="259.6" x2="518.0" y2="259.6" stroke="#333"/>
+<text x="509.0" y="263.6" text-anchor="end" font-family="Arial" font-size="11">10</text>
+<line x1="518.0" y1="259.6" x2="892.0" y2="259.6" stroke="#e8e8e8"/>
+<line x1="513.0" y1="207.2" x2="518.0" y2="207.2" stroke="#333"/>
+<text x="509.0" y="211.2" text-anchor="end" font-family="Arial" font-size="11">20</text>
+<line x1="518.0" y1="207.2" x2="892.0" y2="207.2" stroke="#e8e8e8"/>
+<line x1="513.0" y1="154.8" x2="518.0" y2="154.8" stroke="#333"/>
+<text x="509.0" y="158.8" text-anchor="end" font-family="Arial" font-size="11">30</text>
+<line x1="518.0" y1="154.8" x2="892.0" y2="154.8" stroke="#e8e8e8"/>
+<line x1="513.0" y1="102.39999999999999" x2="518.0" y2="102.39999999999999" stroke="#333"/>
+<text x="509.0" y="106.39999999999999" text-anchor="end" font-family="Arial" font-size="11">40</text>
+<line x1="518.0" y1="102.39999999999999" x2="892.0" y2="102.39999999999999" stroke="#e8e8e8"/>
+<line x1="513.0" y1="50.0" x2="518.0" y2="50.0" stroke="#333"/>
+<text x="509.0" y="54.0" text-anchor="end" font-family="Arial" font-size="11">50</text>
+<polyline points="72.00,312.00 76.16,228.16 80.31,170.52 84.47,154.80 88.62,123.36 92.78,97.16 96.93,97.16 101.09,91.92 105.24,81.44 109.40,76.20 113.56,76.20 117.71,76.20 121.87,76.20 126.02,70.96 130.18,70.96 134.33,70.96 138.49,70.96 142.64,70.96 146.80,70.96 150.96,65.72 155.11,65.72 159.27,60.48 163.42,60.48 167.58,55.24 171.73,55.24 175.89,55.24 180.04,55.24 184.20,55.24 188.36,55.24 192.51,55.24 196.67,55.24 200.82,55.24 204.98,55.24 209.13,55.24 213.29,55.24 217.44,55.24 221.60,55.24 225.76,55.24 229.91,55.24 234.07,55.24 238.22,55.24 242.38,55.24 246.53,55.24 250.69,55.24 254.84,55.24 259.00,55.24 263.16,55.24 267.31,55.24 271.47,55.24 275.62,55.24 279.78,55.24 283.93,55.24 288.09,50.00 292.24,50.00 296.40,50.00 300.56,50.00 304.71,50.00 308.87,50.00 313.02,50.00 317.18,50.00 321.33,50.00 325.49,50.00 329.64,50.00 333.80,50.00 337.96,50.00 342.11,50.00 346.27,50.00 350.42,50.00 354.58,50.00 358.73,50.00 362.89,50.00 367.04,50.00 371.20,50.00 375.36,50.00 379.51,50.00 383.67,50.00 387.82,50.00 391.98,50.00 396.13,50.00 400.29,50.00 404.44,50.00 408.60,50.00 412.76,50.00 416.91,50.00 421.07,50.00 425.22,50.00 429.38,50.00 433.53,50.00 437.69,50.00 441.84,50.00 446.00,50.00" fill="none" stroke="#4f7fa3" stroke-width="2"/>
+<rect x="324.0" y="58" width="12" height="3" fill="#4f7fa3"/>
+<text x="342.0" y="63" font-family="Arial" font-size="11">Gemma-3n</text>
+<rect x="556.33" y="55.24" width="22.00" height="256.76" fill="#4f7fa3"/>
+<text x="567.33" y="51.24" text-anchor="middle" font-family="Arial" font-size="10">49</text>
+<rect x="681.00" y="306.76" width="22.00" height="5.24" fill="#4f7fa3"/>
+<text x="692.00" y="302.76" text-anchor="middle" font-family="Arial" font-size="10">1</text>
+<rect x="805.67" y="312.00" width="22.00" height="0.00" fill="#4f7fa3"/>
+<text x="816.67" y="308.00" text-anchor="middle" font-family="Arial" font-size="10">0</text>
+<polyline points="72.00,312.00 76.16,275.32 80.31,243.88 84.47,243.88 88.62,233.40 92.78,228.16 96.93,222.92 101.09,207.20 105.24,196.72 109.40,196.72 113.56,181.00 117.71,170.52 121.87,165.28 126.02,160.04 130.18,160.04 134.33,160.04 138.49,154.80 142.64,149.56 146.80,144.32 150.96,133.84 155.11,133.84 159.27,128.60 163.42,128.60 167.58,128.60 171.73,128.60 175.89,118.12 180.04,118.12 184.20,118.12 188.36,112.88 192.51,112.88 196.67,112.88 200.82,112.88 204.98,107.64 209.13,107.64 213.29,107.64 217.44,107.64 221.60,107.64 225.76,102.40 229.91,102.40 234.07,102.40 238.22,102.40 242.38,102.40 246.53,102.40 250.69,102.40 254.84,102.40 259.00,102.40 263.16,102.40 267.31,102.40 271.47,102.40 275.62,102.40 279.78,102.40 283.93,102.40 288.09,97.16 292.24,97.16 296.40,91.92 300.56,91.92 304.71,86.68 308.87,86.68 313.02,86.68 317.18,86.68 321.33,86.68 325.49,81.44 329.64,81.44 333.80,81.44 337.96,81.44 342.11,81.44 346.27,81.44 350.42,81.44 354.58,81.44 358.73,81.44 362.89,81.44 367.04,81.44 371.20,81.44 375.36,81.44 379.51,81.44 383.67,81.44 387.82,81.44 391.98,81.44 396.13,81.44 400.29,81.44 404.44,81.44 408.60,81.44 412.76,76.20 416.91,76.20 421.07,76.20 425.22,76.20 429.38,76.20 433.53,76.20 437.69,76.20 441.84,76.20 446.00,76.20" fill="none" stroke="#c75348" stroke-width="2"/>
+<rect x="324.0" y="76" width="12" height="3" fill="#c75348"/>
+<text x="342.0" y="81" font-family="Arial" font-size="11">Llama-3-8B</text>
+<rect x="580.33" y="112.88" width="22.00" height="199.12" fill="#c75348"/>
+<text x="591.33" y="108.88" text-anchor="middle" font-family="Arial" font-size="10">38</text>
+<rect x="705.00" y="285.80" width="22.00" height="26.20" fill="#c75348"/>
+<text x="716.00" y="281.80" text-anchor="middle" font-family="Arial" font-size="10">5</text>
+<rect x="829.67" y="301.52" width="22.00" height="10.48" fill="#c75348"/>
+<text x="840.67" y="297.52" text-anchor="middle" font-family="Arial" font-size="10">2</text>
+<text x="580.3333333333334" y="332" text-anchor="middle" font-family="Arial" font-size="11">1</text>
+<text x="705.0" y="332" text-anchor="middle" font-family="Arial" font-size="11">2</text>
+<text x="829.6666666666667" y="332" text-anchor="middle" font-family="Arial" font-size="11">3</text>
+<rect x="770.0" y="58" width="12" height="8" fill="#4f7fa3"/>
+<text x="788.0" y="66" font-family="Arial" font-size="11">Gemma-3n</text>
+<rect x="770.0" y="76" width="12" height="8" fill="#c75348"/>
+<text x="788.0" y="84" font-family="Arial" font-size="11">Llama-3-8B</text>
+<text x="460.0" y="374" text-anchor="middle" font-family="Arial" font-size="11" fill="#444">Source: PAIR runs, first 50 JailbreakBench harmful behaviors, N=30, K=3</text>
+</svg>

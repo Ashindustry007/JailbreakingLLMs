@@ -1,0 +1,3 @@
+target_model,completed_behaviors,total_target_queries_est,mean_queries_est,total_wall_seconds,mean_wall_seconds,output_cap_cost_usd_est,cost_note
+gemma-3n-e4b-it,50,256,5.12,757.27,15.15,0.0865,Uses output token caps only; input tokens/provider billing may differ.
+llama-3-8b-instruct-lite,50,1164,23.28,42146.65,842.93,0.3969,Uses output token caps only; input tokens/provider billing may differ.

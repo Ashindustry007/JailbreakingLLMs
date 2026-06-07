@@ -1,0 +1,3 @@
+source_label,target_model,source_prompts,transferred,transfer_jailbreak_percent
+gpt-4o,gemma-3n-e4b-it,35,11,31.43
+gpt-4o,llama-3-8b-instruct-lite,35,4,11.43

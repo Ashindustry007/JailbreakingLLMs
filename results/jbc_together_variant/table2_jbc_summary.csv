@@ -1,0 +1,3 @@
+target_model,completed_behaviors,templates,avg_template_jailbreak_percent,any_template_jailbreak_percent
+gemma-3n-e4b-it,50,9,67.11,100.0
+llama-3-8b-instruct-lite,50,9,11.56,64.0

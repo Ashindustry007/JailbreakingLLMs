@@ -1,7 +1,7 @@
 import json
 from common import get_api_key, conv_template, extract_json
 from language_models import APILiteLLM
-from config import FASTCHAT_TEMPLATE_NAMES, Model
+from config import FASTCHAT_TEMPLATE_NAMES, LITELLM_TEMPLATES, Model
 
 
 def load_attack_and_target_models(args):
@@ -66,7 +66,9 @@ class AttackLM():
                                       local = evaluate_locally, 
                                       use_jailbreakbench=False # Cannot use JBB as attacker
                                       )
-        self.initialize_output = self.model.use_open_source_model
+        self.initialize_output = (
+            self.model.use_open_source_model and self.model_name in LITELLM_TEMPLATES
+        )
         self.template = FASTCHAT_TEMPLATE_NAMES[self.model_name]
 
     def preprocess_conversation(self, convs_list: list, prompts_list: list[str]):
