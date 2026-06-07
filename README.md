@@ -61,6 +61,15 @@ iteration). Same-model cell omitted, per the paper.
 |--------|--------------------------|:---------:|:--------:|
 | PAIR (ours) | GPT-4o | **45.7%** (16/35) | — |
 
+**Table 5 — Defended performance:** replay each model's jailbreak prompts on the
+same model behind a defense; JB% over 50 behaviors (drop vs None in parens).
+
+| Defense | GPT-3.5 | GPT-4o |
+|---------|:-------:|:------:|
+| None | 80.0% | 70.0% |
+| SmoothLLM (N=10, q=10%, majority vote) | 44.0% (↓45.0%) | 30.0% (↓57.1%) |
+| Perplexity filter (GPT-2) | 80.0% (↓0.0%) | 70.0% (↓0.0%) |
+
 ## Brief Conclusions
 
 1. **PAIR reproduces.** Black-box semantic-reframing jailbreaks succeed on both
@@ -83,6 +92,11 @@ iteration). Same-model cell omitted, per the paper.
    GPT-4o still jailbreak GPT-3.5 unchanged — prompts tuned on a stronger model
    carry over to a weaker one without any re-optimization, echoing the paper's
    transferability finding (GPT-4 → GPT-3.5 = 65% there).
+7. **Perplexity filtering is useless against PAIR; SmoothLLM helps.** The
+   perplexity filter blocks **0** prompts (↓0.0%) — PAIR's jailbreaks are fluent
+   natural language (GPT-2 perplexity 18–52), invisible to a filter built for
+   GCG's gibberish. SmoothLLM (random char swaps + majority vote) cuts ASR
+   45–57%. Semantic jailbreaks require a perturbation- or model-level defense.
 
 > **Caveats.** Judge **and** attacker differ from the paper (Qwen for Mixtral,
 > Llama-Guard-4 for GPT-4 / Llama-Guard-1), so these numbers are **not** directly
