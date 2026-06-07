@@ -47,10 +47,21 @@ class _JudgeArgs:
 
 def main():
     args = parse_args()
-    src = [json.loads(l) for l in open(args.source_jsonl)]
+    # Accept both a JSON array (collaborator's *.json) and JSONL (our
+    # run_dataset.py *.jailbreaks.jsonl).
+    text = open(args.source_jsonl).read().strip()
+    try:
+        src = json.loads(text)
+        if isinstance(src, dict):
+            src = [src]
+    except json.JSONDecodeError:
+        src = [json.loads(l) for l in text.splitlines() if l.strip()]
     if args.limit:
         src = src[:args.limit]
-    source_model = src[0].get("target_model", "?") if src else "?"
+    # source model may be labelled "source_model" (collaborator) or
+    # "target_model" (our jsonl, where the target IS the source of these prompts).
+    source_model = (src[0].get("source_model") or src[0].get("target_model")
+                    or "?") if src else "?"
 
     if source_model == args.target_model:
         print(f"WARNING: source == target ({source_model}); Table 3 omits this cell "
