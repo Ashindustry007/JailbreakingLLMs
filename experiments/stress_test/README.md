@@ -15,6 +15,6 @@ blunts direct adaptive attacks but not transferred ones.
 
 ```bash
 export OPENAI_API_KEY=...   OPENAI_BASE_URL=<gateway>/v1
-python run_ucsd_pair_variant.py --attack-model <attacker> --target-model <target> --limit 50
+python run_pair.py --attack-model <attacker> --target-model <target> --limit 50
 python experiments/stress_test/transfer_eval.py          # source->downstream transfer matrix
 ```

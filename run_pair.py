@@ -1,4 +1,10 @@
-"""Run a PAIR model-variant experiment through the UCSD TritonAI gateway."""
+"""Main PAIR runner: drive an attacker / target / judge through any
+litellm-routed or OpenAI-compatible provider.
+
+Used for both the Table-2 direct attacks (pass --target-model) and the SOTA
+stress test (point --base-url at a gateway). One query loop, N streams x K
+iterations, early-stop on the first jailbreak.
+"""
 
 from __future__ import annotations
 

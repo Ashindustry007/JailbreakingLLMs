@@ -24,7 +24,7 @@ Gemma-3n-E4B-it, GPT-3.5-Turbo, GPT-4o.
 
 ```
 config.py, judges.py, sources.py   shared modules (model routing, judge, prompt extraction)
-run_ucsd_pair_variant.py           main PAIR runner (attacker / target / judge)
+run_pair.py           main PAIR runner (attacker / target / judge)
 jbc_eval.py                        JailbreakChat static-template baseline (Table 2 "JBC")
 experiments/
   stress_test/        PAIR methodology against 2026 SOTA models (gateway study)
@@ -47,7 +47,7 @@ export TOGETHER_API_KEY=...      # attacker, judge, Together targets
 export GEMINI_API_KEY=...        # Gemini target
 export OPENAI_API_KEY=...        # GPT targets
 
-python run_ucsd_pair_variant.py --target-model qwen3-235b-instruct --limit 50
+python run_pair.py --target-model qwen3-235b-instruct --limit 50
 python jbc_eval.py               --target-model qwen3-235b-instruct --limit 50
 ```
 
