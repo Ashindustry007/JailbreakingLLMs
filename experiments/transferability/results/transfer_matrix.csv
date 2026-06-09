@@ -1,0 +1,11 @@
+source,downstream,transfer_pct,fraction
+Qwen3-235B,Gemini-2.5-Flash,0,0/17
+Qwen3-235B,Llama-3-8B,41.18,7/17
+Qwen3-235B,Gemma-3n,82.35,14/17
+Qwen3-235B,GPT-3.5,94.12,16/17
+Qwen3-235B,GPT-4o,64.71,11/17
+GPT-4o,Qwen3-235B,20.0,7/35
+GPT-4o,Gemini-2.5-Flash,0,0/35
+GPT-4o,Llama-3-8B,11.4,4/35
+GPT-4o,Gemma-3n,31.4,11/35
+GPT-4o,GPT-3.5,45.7,16/35

@@ -30,6 +30,9 @@ class Model(Enum):
     paper_qwen_attacker = "qwen-2.5-7b-instruct-turbo"   # attacker via Together
     paper_gemini = "gemini-2.5-flash"                    # target via Google
     paper_qwen_target = "qwen3-235b-instruct"            # target via Together (!= attacker)
+    paper_llama_attacker = "llama-3.3-70b-instruct-turbo"  # attacker via Together
+    paper_llama38b = "llama-3-8b-instruct-lite"           # Together target (high JB)
+    paper_gemma3n = "gemma-3n-e4b-it"                     # Together target (high JB)            # target via Together (!= attacker)
 
 MODEL_NAMES = [model.value for model in Model]
 
@@ -39,6 +42,9 @@ LITELLM_NAME_OVERRIDES: dict = {
     Model.paper_qwen_attacker: "together_ai/Qwen/Qwen2.5-7B-Instruct-Turbo",
     Model.paper_gemini: "gemini/gemini-2.5-flash",
     Model.paper_qwen_target: "together_ai/Qwen/Qwen3-235B-A22B-Instruct-2507-tput",
+    Model.paper_llama_attacker: "together_ai/meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    Model.paper_llama38b: "together_ai/meta-llama/Meta-Llama-3-8B-Instruct-Lite",
+    Model.paper_gemma3n: "together_ai/google/gemma-3n-E4B-it",
 }
 
 
@@ -96,6 +102,9 @@ FASTCHAT_TEMPLATE_NAMES: dict[Model, str] = {
     Model.paper_qwen_attacker: "gpt-3.5-turbo",
     Model.paper_gemini: "gpt-3.5-turbo",
     Model.paper_qwen_target: "gpt-3.5-turbo",
+    Model.paper_llama_attacker: "gpt-3.5-turbo",
+    Model.paper_llama38b: "gpt-3.5-turbo",
+    Model.paper_gemma3n: "gpt-3.5-turbo",
 }
 
 API_KEY_NAMES: dict[Model, str] = {
@@ -118,6 +127,9 @@ API_KEY_NAMES: dict[Model, str] = {
     Model.paper_qwen_attacker: "TOGETHER_API_KEY",
     Model.paper_gemini: "GEMINI_API_KEY",
     Model.paper_qwen_target: "TOGETHER_API_KEY",
+    Model.paper_llama_attacker: "TOGETHER_API_KEY",
+    Model.paper_llama38b: "TOGETHER_API_KEY",
+    Model.paper_gemma3n: "TOGETHER_API_KEY",
 }
 
 LITELLM_TEMPLATES: dict[Model, dict] = {

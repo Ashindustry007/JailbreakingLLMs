@@ -1,0 +1,4 @@
+defense,jb_percent,jb_count,n,drop_vs_none
+None,56,28,50,0
+SmoothLLM,14,7,50,75
+Perplexity filter,56,28,50,0

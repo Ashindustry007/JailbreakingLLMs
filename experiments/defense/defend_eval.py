@@ -9,13 +9,15 @@ Judged by the same Llama-Guard-4. JB% is reported over all 50 behaviors.
 
 Together (SmoothLLM queries + judge) + local GPT-2 (perplexity). ~$1.
 """
+import sys, pathlib as _pl
+sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[2]))
 import json, os, random, string
 import torch
 from transformers import GPT2LMHeadModel, GPT2TokenizerFast
 import jailbreakbench as jbb
 from language_models import APILiteLLM
 from judges import LlamaGuard4Judge
-from transfer_paper import collect_sources
+from sources import collect_sources
 
 TARGET = "qwen3-235b-instruct"
 N_SMOOTH = 10          # SmoothLLM samples

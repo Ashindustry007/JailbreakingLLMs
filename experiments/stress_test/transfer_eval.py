@@ -13,14 +13,16 @@ Run via run_variant.sh-style env, e.g.:
     python transfer_eval.py
 """
 from __future__ import annotations
+import sys, pathlib as _pl
+sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[2]))
 import os, re, json, glob
 import litellm
 import jailbreakbench as jbb
 from system_prompts import get_judge_system_prompt
 
 litellm.drop_params = True
-BASE = os.environ["OPENAI_BASE_URL"]
-KEY = os.environ["OPENAI_API_KEY"]
+BASE = os.environ.get("OPENAI_BASE_URL", "https://tritonai-api.ucsd.edu/v1")
+KEY = os.environ.get("OPENAI_API_KEY", "")
 JUDGE = "claude-sonnet-4-6"
 OUT = "logs/transfer"
 os.makedirs(OUT, exist_ok=True)

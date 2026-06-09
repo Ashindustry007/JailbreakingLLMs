@@ -1,0 +1,5 @@
+target,original_prompt_asr,refusal_aware_asr,n
+Qwen3-235B,56,34,50
+Llama-3-8B,90,30,50
+Gemma-3n,100,80,50
+Gemini-2.5-Flash,0,0,50

@@ -11,46 +11,22 @@ Run via run_paper_table2.sh-style env (TOGETHER_API_KEY + GEMINI_API_KEY set):
   python transfer_paper.py
 """
 from __future__ import annotations
+import sys, pathlib as _pl
+sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[2]))
 import os, re, json, glob
 from language_models import APILiteLLM
 from judges import LlamaGuard4Judge
+from sources import collect_sources
 
 OUT = "logs/transfer_paper"
 os.makedirs(OUT, exist_ok=True)
 RESULTS = os.path.join(OUT, "results.jsonl")
 
-# Table-2 run dirs that may contain source jailbreak prompts.
-SOURCE_DIRS = ["logs/paper_qwen_target", "logs/paper_gemini"]
 # Downstream targets (config model names). Claude excluded (budget parked).
 DOWNSTREAM = ["qwen3-235b-instruct", "gemini-2.5-flash"]
 
-PROMPT_RE = re.compile(r"Example Jailbreak PROMPT:\s*(.*?)\nExample Jailbreak RESPONSE:", re.S)
 
 
-def collect_sources():
-    """{source_model: [(index, jailbreak_prompt), ...]} from the paper runs."""
-    out = {}
-    for d in SOURCE_DIRS:
-        sp = os.path.join(d, "status.jsonl")
-        if not os.path.isfile(sp):
-            continue
-        rows = [json.loads(l) for l in open(sp)]
-        if not rows:
-            continue
-        src = rows[-1]["target_model"]
-        jbs = []
-        for r in rows:
-            if r.get("jailbroken") is not True:
-                continue
-            lf = r.get("log_file")
-            if not lf or not os.path.isfile(lf):
-                continue
-            m = PROMPT_RE.search(open(lf, errors="replace").read())
-            if m:
-                jbs.append((int(r["index"]), m.group(1).strip()))
-        if jbs:
-            out[src] = jbs
-    return out
 
 
 def load_done():

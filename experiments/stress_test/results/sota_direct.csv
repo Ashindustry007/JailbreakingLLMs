@@ -1,0 +1,6 @@
+target,asr,note
+Llama-4-Scout,18-29%,only model broken by direct PAIR
+GPT-OSS-120B,0%,
+Gemma,0%,
+Mistral-Large-3,0%,0% direct but 57% under transfer
+Claude-Sonnet-4.6,0%,

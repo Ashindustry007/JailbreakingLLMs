@@ -42,3 +42,9 @@ run_target_sweep.sh
 run_transfer_paper.sh
 run_variant.sh
 *.sh
+
+# --- intermediate re-judge data (kept local) ---
+rejudge/
+/gpt4o_head50.jailbreaks.jsonl
+/qwen3_jailbreak_prompts.json
+/qwen3_jailbreak_prompts.csv
