@@ -25,7 +25,7 @@ Gemma-3n-E4B-it, GPT-3.5-Turbo, GPT-4o.
 ```
 config.py, judges.py, sources.py   shared modules (model routing, judge, prompt extraction)
 run_pair.py           main PAIR runner (attacker / target / judge)
-jbc_eval.py                        JailbreakChat static-template baseline (Table 2 "JBC")
+jbc/                               JailbreakChat static-template baseline (Table 2 "JBC")
 experiments/
   stress_test/        PAIR methodology against 2026 SOTA models (gateway study)
   judge_prompt/       judge-prompt sensitivity: original vs refusal-aware Llama-Guard
@@ -35,8 +35,7 @@ figures/              plotting code for the report figures
 results/              per-target result summaries (including collaborators' runs)
 ```
 The upstream PAIR algorithm (`conversers.py`, `system_prompts.py`, `common.py`,
-`loggers.py`, `main.py`, `language_models.py`) is unchanged; see
-`README_UPSTREAM_PAIR.md`.
+`loggers.py`, `main.py`, `language_models.py`) is unchanged.
 
 ## Running
 
@@ -48,7 +47,7 @@ export GEMINI_API_KEY=...        # Gemini target
 export OPENAI_API_KEY=...        # GPT targets
 
 python run_pair.py --target-model qwen3-235b-instruct --limit 50
-python jbc_eval.py               --target-model qwen3-235b-instruct --limit 50
+python jbc/jbc_eval.py           --target-model qwen3-235b-instruct --limit 50
 ```
 
 Each experiment folder has its own README and result files.

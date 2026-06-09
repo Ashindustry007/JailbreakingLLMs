@@ -13,15 +13,15 @@ PAIR Table-2 runs, so the numbers are directly comparable.
 ## Run
 
 Export the API keys for your target + judge as environment variables, then call
-`jbc_eval.py` directly:
+`jbc/jbc_eval.py` directly:
 
 ```bash
 export TOGETHER_API_KEY=...   # Qwen target + Llama-Guard-4 judge
 export GEMINI_API_KEY=...     # only if targeting Gemini
 
-python jbc_eval.py --target-model qwen3-235b-instruct --limit 50
-python jbc_eval.py --target-model gemini-2.5-flash    --limit 50
-python jbc_eval.py --target-model llama-2-7b-chat-hf  --limit 50   # different target
+python jbc/jbc_eval.py --target-model qwen3-235b-instruct --limit 50
+python jbc/jbc_eval.py --target-model gemini-2.5-flash    --limit 50
+python jbc/jbc_eval.py --target-model llama-2-7b-chat-hf  --limit 50   # different target
 ```
 
 Output → `logs/jbc_<target>/status.jsonl` and a printed summary with the overall
@@ -37,9 +37,9 @@ Output → `logs/jbc_<target>/status.jsonl` and a printed summary with the overa
    is shared, so results are comparable across the team.
 
 ## Files
-- `jbc_eval.py` — the evaluator (CLI: `--target-model`, `--judge-model`,
+- `jbc/jbc_eval.py` — the evaluator (CLI: `--target-model`, `--judge-model`,
   `--limit`, `--start-index`, `--resume`, `--log-dir`).
-- `jbc_templates.json` — the jailbreak templates (name, source, template). Each
+- `jbc/jbc_templates.json` — the jailbreak templates (name, source, template). Each
   MUST contain the `[INSERT PROMPT HERE]` placeholder. Add/remove freely.
 
 ## Templates & faithfulness
@@ -51,4 +51,4 @@ Output → `logs/jbc_<target>/status.jsonl` and a printed summary with the overa
   BetterDAN, evil (9 templates).
 - ⚠️ The paper used **10** templates but only published the AIM one, so this is a
   faithful *approximation* of the JBC baseline, not the exact 10. Add a 10th to
-  `jbc_templates.json` if you want — the tool is count-agnostic.
+  `jbc/jbc_templates.json` if you want — the tool is count-agnostic.

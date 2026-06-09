@@ -18,6 +18,8 @@ Env (set by run_jbc.sh): the API key env var(s) for the chosen target + judge,
 e.g. TOGETHER_API_KEY (Qwen target + Llama-Guard judge), GEMINI_API_KEY, etc.
 """
 from __future__ import annotations
+import sys, pathlib as _pl
+sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[1]))
 import argparse, json, os, re
 from pathlib import Path
 
@@ -25,7 +27,7 @@ import jailbreakbench as jbb
 from language_models import APILiteLLM
 from judges import load_judge
 
-TEMPLATES_FILE = "jbc_templates.json"
+TEMPLATES_FILE = str(_pl.Path(__file__).resolve().parent / "jbc_templates.json")
 PLACEHOLDER = "[INSERT PROMPT HERE]"
 
 
