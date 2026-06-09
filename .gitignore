@@ -48,3 +48,10 @@ rejudge/
 /gpt4o_head50.jailbreaks.jsonl
 /qwen3_jailbreak_prompts.json
 /qwen3_jailbreak_prompts.csv
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
