@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reproducing PAIR: Jailbreaking Black-Box LLMs in Twenty Queries</title>
+<style>
+  :root{ --red:#C1292E; --reddk:#7A1518; --teal:#2A9D8F; --navy:#264653;
+         --amber:#E9C46A; --ink:#1F2329; --grey:#5A6068; --line:#E4E6EA; }
+  *{box-sizing:border-box;}
+  body{font-family:Georgia,'Times New Roman',serif; color:var(--ink);
+       max-width:760px; margin:0 auto; padding:48px 28px 80px; line-height:1.72;
+       font-size:19px; background:#fff;}
+  h1{font-family:'Helvetica Neue',Arial,sans-serif; font-size:38px; line-height:1.18;
+     letter-spacing:-.5px; margin:0 0 6px;}
+  h2{font-family:'Helvetica Neue',Arial,sans-serif; font-size:27px; margin:46px 0 10px;
+     letter-spacing:-.3px; border-bottom:2px solid var(--line); padding-bottom:6px;}
+  h3{font-family:'Helvetica Neue',Arial,sans-serif; font-size:20px; margin:30px 0 6px; color:var(--navy);}
+  .sub{color:var(--grey); font-size:20px; font-style:italic; margin:0 0 18px;}
+  .byline{font-family:'Helvetica Neue',Arial,sans-serif; font-size:15px; color:var(--grey);
+          border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+          padding:12px 0; margin:22px 0 30px;}
+  p{margin:14px 0;}
+  figure{margin:26px 0; text-align:center;}
+  figure img{width:100%; border:1px solid var(--line); border-radius:6px;}
+  figcaption{font-family:'Helvetica Neue',Arial,sans-serif; font-size:14px; color:var(--grey);
+             margin-top:8px; line-height:1.5; text-align:left;}
+  .lead{font-size:21px;}
+  blockquote{border-left:4px solid var(--red); margin:22px 0; padding:4px 0 4px 20px;
+             color:var(--reddk); font-style:italic;}
+  code{font-family:'SF Mono',Consolas,Menlo,monospace; font-size:15px;
+       background:#F4F4F5; padding:2px 6px; border-radius:4px;}
+  pre{background:#1F2329; color:#E8EAED; padding:18px 20px; border-radius:8px;
+      overflow-x:auto; font-size:14px; line-height:1.55; font-family:'SF Mono',Consolas,Menlo,monospace;}
+  pre .c{color:#8A929E;} pre .k{color:#E9C46A;} pre .s{color:#7FD1B9;}
+  table{border-collapse:collapse; width:100%; font-family:'Helvetica Neue',Arial,sans-serif;
+        font-size:14.5px; margin:22px 0;}
+  th,td{border:1px solid var(--line); padding:8px 10px; text-align:center;}
+  th{background:var(--navy); color:#fff; font-weight:600;}
+  td:first-child,th:first-child{text-align:left;}
+  tr:nth-child(even) td{background:#FAFAFB;}
+  .pill{display:inline-block; font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px;
+        font-weight:600; color:#fff; background:var(--red); padding:2px 10px; border-radius:20px;}
+  .key{background:#FBF3E3; border:1px solid var(--amber); border-radius:8px; padding:14px 18px; margin:22px 0;}
+  .key b{color:var(--reddk);}
+  a{color:var(--red);}
+  .small{font-size:15px; color:var(--grey);}
+</style>
+</head>
+<body>
+
+<h1>Reproducing PAIR: Jailbreaking Black-Box LLMs in Twenty Queries</h1>
+<p class="sub">What survives two years of safety post-training, what doesn't, and why the judge you pick changes the answer.</p>
+<p class="byline"><b>DSC 291 &middot; Trustworthy Machine Learning</b> &nbsp;|&nbsp; Tia Zhang, Ashish Kumar Panda, Fengfei Yu, Yuxin Xiong, Yuyuan Wu (UC San Diego) &nbsp;|&nbsp; ~11 min read</p>
+
+<p class="lead">Large language models are trained to refuse harmful requests. <i>Jailbreaks</i> are adversarial prompts that get them to comply anyway. In 2023, a UPenn group introduced <b>PAIR</b> &mdash; a method that finds such prompts automatically, in fewer than twenty queries, using nothing but black-box API access. We set out to reproduce it on the models of 2026. The headline: PAIR's <i>qualitative</i> story holds up remarkably well, but the absolute numbers have quietly shifted under two years of alignment work, and one methodological choice &mdash; the judge &mdash; turns out to matter more than the attack itself.</p>
+
+<h2>1. Introduction</h2>
+<p>Before an LLM is trusted in a safety-critical setting, someone needs to stress-test its guardrails. The trouble is that the two classic ways of doing this are each unsatisfying. <b>Prompt-level</b> jailbreaks &mdash; the clever "pretend you are an unfiltered AI" stories you see on social media &mdash; are human-readable but require creativity and manual labor, and a single good template gets patched. <b>Token-level</b> jailbreaks like GCG instead optimize a string of gibberish appended to the request; they are powerful but need white-box gradient access and hundreds of thousands of queries, and the resulting suffix is uninterpretable.</p>
+<p><b>PAIR</b> (Prompt Automatic Iterative Refinement) by Chao et al. (2023) bridges the two. It keeps the interpretability of prompt-level attacks while automating them entirely. Its three claimed contributions are: <b>(i) efficiency</b> &mdash; typically &lt;20 queries per jailbreak, ~250&times; fewer than GCG; <b>(ii) effectiveness</b> &mdash; competitive attack success rate (ASR) across open and closed models; and <b>(iii) interpretability and transferability</b> &mdash; the prompts read like English and carry over to other models.</p>
+<p>This post does two things. <b>Part I</b> reproduces the closed-source portion of the paper's headline table, the static-template baseline, and the transfer experiment. <b>Part II</b> goes beyond reproduction and asks the question the paper couldn't: <i>does a 2024 attack still break 2026 frontier models?</i></p>
+
+<h2>2. Background &amp; Related Work</h2>
+<p>Formally, PAIR searches for a prompt <code>P</code> such that a judge function labels the target's response <code>R&nbsp;~&nbsp;q_T(P)</code> as jailbroken. The search is black-box: it only needs sampling access to the target, no weights and no gradients. That single design choice is what makes PAIR runnable against a closed API like Gemini, and it's why GCG &mdash; which needs gradients &mdash; can only be evaluated on open models.</p>
+<figure>
+  <img src="figures/fig01.png" alt="taxonomy">
+  <figcaption><b>Figure 1.</b> The jailbreak landscape. Token-level attacks (GCG) are strong but white-box, query-hungry, and produce gibberish a perplexity filter can catch. Manual prompt-level attacks are readable but don't scale. PAIR automates the prompt-level family, keeping fluency while removing the human.</figcaption>
+</figure>
+<p>PAIR sits in a fast-moving neighborhood. <b>GCG</b> (Zou et al., 2023) is the token-level reference point. <b>Tree of Attacks (TAP)</b> extends PAIR's single refinement chain into a branching tree with pruning. <b>BEAST</b> attacks in one GPU-minute, and <b>AdvPrompter</b> trains a separate model to emit adversarial prompts. On the defense side, <b>SmoothLLM</b> perturbs the input and votes, perplexity filters flag high-entropy strings, and <b>JailbreakBench</b> standardizes evaluation. We use JailbreakBench's behaviors and judge tooling throughout.</p>
+
+<h2>3. Approach</h2>
+<p>PAIR pits two LLMs against each other. An <b>attacker</b> is given a red-team system prompt and an objective (the harmful behavior to elicit). It proposes a candidate prompt <code>P</code>; the <b>target</b> answers with <code>R</code>; a <b>judge</b> scores the pair. If the score says "not jailbroken," the prompt, response, and score are appended to the attacker's chat history and it tries again &mdash; using chain-of-thought to reason about <i>why</i> the last attempt failed before refining. The loop usually terminates in a handful of turns.</p>
+<figure>
+  <img src="figures/fig02.png" alt="pair loop">
+  <figcaption><b>Figure 2.</b> The PAIR loop. The attacker only ever sees the target through its API. Crucially, the attacker keeps the full conversation history (so it can adapt), while each target query is fresh and stateless. The whole thing is parallelized into <i>N</i> independent streams of depth <i>K</i>, so the query budget is <i>N&times;K</i>.</figcaption>
+</figure>
+<p>Two implementation details do a lot of work. First, the attacker's system prompt is built around one of three <b>persuasion strategies</b> &mdash; role-playing ("you are a novelist on a deadline&hellip;"), logical appeal ("understanding this is academically important&hellip;"), and authority endorsement ("per NIST and DHS guidance&hellip;"). In the original paper role-playing was by far the most effective. Second, the attacker is forced to emit JSON with an <code>improvement</code> field and a <code>prompt</code> field; the <code>improvement</code> field is the chain-of-thought that makes the refinement coherent. We deliberately describe the <i>structure</i> of these prompts rather than reprinting working exploits.</p>
+<p>The default budget from the paper is <code>N=30</code> streams &times; <code>K=3</code> iterations &mdash; at most 90 queries per behavior, but typically far fewer because the loop stops on the first success.</p>
+<pre><span class="c"># PAIR, one stream (Algorithm 1 from the paper)</span>
+<span class="k">def</span> pair_stream(objective, K, judge):
+    attacker = Attacker(system_prompt=role_play(objective))
+    history = []
+    <span class="k">for</span> _ <span class="k">in</span> range(K):
+        P = attacker.generate(history)        <span class="c"># JSON: {improvement, prompt}</span>
+        R = target(P)                          <span class="c"># black-box API call, temp=0</span>
+        S = judge(P, R)                        <span class="c"># 1 = jailbroken, 0 = not</span>
+        <span class="k">if</span> S == 1:
+            <span class="k">return</span> P                          <span class="c"># success</span>
+        history += [(P, R, S)]                  <span class="c"># feed failure back to attacker</span>
+    <span class="k">return</span> <span class="k">None</span>
+</pre>
+
+<h2>4. Experiments</h2>
+<h3>Setup, benchmarks, baselines, metrics</h3>
+<p>A strict 1:1 reproduction is impossible: the paper's exact targets &mdash; Claude-1/2 and the original Gemini-Pro &mdash; have been retired by their providers. So we built a single shared pipeline and documented every deviation. All models are called through their native providers via <code>litellm</code>.</p>
+<figure><img src="figures/table1.png" alt="table 1"></figure>
+<p><b>Metrics.</b> <i>Jailbreak %</i> (ASR) is the fraction of behaviors that produce a response the judge flags as jailbroken; <i>Queries-per-Success</i> is the average number of target queries used on the successful behaviors. Because absolute numbers can't match the paper's retired endpoints, our goal is to recover the paper's <i>qualitative ordering</i>.</p>
+
+<h3>Result 1 &mdash; Direct attacks: the ordering survives</h3>
+<figure>
+  <img src="figures/fig03.png" alt="orig vs repro">
+  <figcaption><b>Figure 3.</b> Original paper ASR (left) vs. our reproduction (right), colored by open (red) / closed (navy). The shape is preserved: weakly-aligned open models fall easily; a heavily-aligned closed model resists. The twist is which model that is &mdash; in 2023 Gemini-Pro was the most <i>vulnerable</i> closed model at 73%; in 2026 Gemini-2.5-Flash is the most <i>robust</i> at 0%.</figcaption>
+</figure>
+<p>PAIR jailbreaks the weak open models almost trivially (Gemma-3n 100%, Llama-3-8B 90%), partially breaks the larger Qwen3-235B (56%), and never breaks Gemini. The static JailbreakChat templates, by contrast, fail or nearly fail everywhere &mdash; modern models are explicitly trained to refuse "AIM" and "DAN."</p>
+<figure>
+  <img src="figures/fig04.png" alt="pair vs jbc">
+  <figcaption><b>Figure 4.</b> Adaptive PAIR vs. static JailbreakChat. This is the paper's central ordering &mdash; <b>adaptive &raquo; static</b> &mdash; and it reproduces cleanly. JBC manages 66% on GPT-3.5 (which apparently still recognizes old templates loosely) but collapses to 0% on GPT-4o, Qwen3-235B, and Gemini. Per-behavior adaptation is what defeats template-based refusal training.</figcaption>
+</figure>
+
+<h3>Result 2 &mdash; Efficiency: the curve still bends early</h3>
+<figure>
+  <img src="figures/fig05.png" alt="efficiency">
+  <figcaption><b>Figure 5.</b> When PAIR succeeds, it succeeds fast. For the easy open models almost every jailbreak lands on the <i>first</i> query; even on the harder Qwen3-235B the mean is ~27 queries. This matches the paper's "fewer than twenty queries" efficiency claim and its diminishing-returns-with-depth observation.</figcaption>
+</figure>
+
+<h3>Result 3 &mdash; Transferability: semantic prompts port across similar data</h3>
+<figure>
+  <img src="figures/fig06.png" alt="transfer">
+  <figcaption><b>Figure 6.</b> We replay each successful prompt <i>once</i> (no PAIR loop) against a downstream model. Qwen3-235B's prompts transfer strongly to weaker models (94% to GPT-3.5, 82% to Gemma-3n) but 0% to Gemini &mdash; exactly mirroring Gemini's 0% direct ASR. A robust model resists transferred attacks just as it resists direct ones, and PAIR's readable prompts transfer far better than GCG's model-specific token strings.</figcaption>
+</figure>
+
+<h3>Result 4 &mdash; Defenses: invisible to perplexity, fragile to perturbation</h3>
+<figure>
+  <img src="figures/fig07.png" alt="defense">
+  <figcaption><b>Figure 7.</b> The paper's signature defense result reproduces exactly. A <b>perplexity filter</b> removes <i>zero</i> PAIR prompts &mdash; they are fluent natural language, indistinguishable from benign queries. <b>SmoothLLM</b>, which randomly perturbs characters and votes, cuts ASR by ~75% on Qwen3-235B because the precisely-worded role-play scaffold is brittle. The lesson: defending against semantic jailbreaks needs perturbation- or model-level defenses, not entropy filters.</figcaption>
+</figure>
+
+<h3>GitHub &amp; reproducibility</h3>
+<p>We built on the official PAIR codebase: <a href="https://github.com/patrickrchao/JailbreakingLLMs">github.com/patrickrchao/JailbreakingLLMs</a>. Every member ran the <i>identical</i> attacker, judge, and budget and split the targets, so the rows of every table are directly comparable across the team. A single shared repository holds all code, per-behavior logs, and transfer matrices; each table row regenerates with one command:</p>
+<pre><span class="c"># reproduce a single target column end-to-end</span>
+python run_pair.py \
+  --attacker qwen2.5-7b-instruct-turbo \
+  --target   qwen3-235b-a22b-instruct \
+  --judge    llama-guard-4-12b \
+  --n-streams 30 --k-iters 3 \
+  --behaviors jailbreakbench --n-behaviors 50
+</pre>
+
+<h2>5. New Experiments &amp; Findings</h2>
+<p>This is where the project goes past a reproduction.</p>
+
+<h3>Finding A &mdash; Does PAIR still break 2026 frontier models?</h3>
+<p>We ran an independent study through a university gateway with a different attacker (<code>deepseek-v4-flash</code>), an LLM-as-judge (Claude-Sonnet-4.6, 1&ndash;10 scoring), and a panel of recent targets.</p>
+<figure>
+  <img src="figures/fig08.png" alt="sota">
+  <figcaption><b>Figure 8.</b> Direct PAIR against 2026 models. Only the older Llama-4-Scout falls (18&ndash;29%). GPT-OSS-120B, Gemma-4-26B, Mistral-Large-3, and Claude-Sonnet-4.6 all hold at 0%. Two years of safety post-training have substantially blunted the <i>direct</i> form of this 2024 attack on frontier systems.</figcaption>
+</figure>
+
+<h3>Finding B &mdash; Direct robustness &ne; transfer robustness</h3>
+<p>The most interesting result is an asymmetry the original paper never surfaces. We took Llama-4-Scout's successful prompts and replayed them against the models that had resisted direct attack.</p>
+<figure>
+  <img src="figures/fig09.png" alt="asymmetry">
+  <figcaption><b>Figure 9.</b> Mistral-Large-3 is <b>0%</b> under a direct adaptive attacker but <b>57%</b> under transferred prompts. The model that best resists an in-context attacker is <i>not</i> the one that best resists pre-crafted prompts. Robustness to adaptive search and robustness to static transfer are different properties &mdash; a gap worth flagging for anyone using direct-attack ASR as their only safety metric.</figcaption>
+</figure>
+
+<h3>Finding C &mdash; The judge is the dominant source of error</h3>
+<p>Over ~90 judge calls per behavior, Llama-Guard-4 systematically mislabels articulate refusals (and "defanged" answers that merely <i>mention</i> a harmful topic) as unsafe, because the default JailbreakBench prompt never tells it that a refusal is safe. Since PAIR optimizes toward judge=10 and stops on the first hit, these false positives directly inflate reported ASR.</p>
+<figure>
+  <img src="figures/fig10.png" alt="judge">
+  <figcaption><b>Figure 10.</b> ASR under the original judge prompt vs. our refusal-aware prompt plus a deterministic refusal pre-filter. The inflation tracks <i>refusal style</i>: huge for Llama-3-8B (90&rarr;30), which writes long on-topic refusals; moderate for Qwen3-235B (56&rarr;34); small for genuinely-complying Gemma-3n (100&rarr;80); zero for Gemini, whose terse refusals give the classifier nothing to over-flag.</figcaption>
+</figure>
+<div class="key"><b>The uncomfortable implication:</b> because the inflation grows with alignment, a topic-classifier judge makes <i>well-aligned</i> models look more broken than they are. A manual check found <i>all</i> of GPT-4o's one-query "successes" were false positives. Any jailbreak leaderboard is really measuring the judge as much as the attack.</div>
+
+<h2>6. Discussion</h2>
+<p><b>What we liked.</b> PAIR is elegant and genuinely cheap &mdash; it runs on a CPU through API calls for cents per jailbreak, which is exactly why it makes a tractable class project where GCG's 256k-query, GPU-hours budget does not. The black-box framing aged extremely well: nothing about the method assumed a model that still exists today.</p>
+<p><b>What we'd push back on.</b> The paper leans entirely on an automated judge and reports a single run. Our experience is that the judge is the experiment's center of gravity, not a footnote &mdash; and the paper's own choice (low false-positive Llama Guard) papers over a false-<i>positive</i> problem that resurfaces badly on articulate modern refusers. We'd also have liked confidence intervals; ASR on 50&ndash;100 behaviors with one seed is noisy.</p>
+
+<h3>Strengths, weaknesses, and how PAIR compares</h3>
+<figure><img src="figures/table2.png" alt="table 2"></figure>
+<p><b>Limitations &mdash; and whether the literature has addressed them.</b> The paper itself notes PAIR struggles against heavily fine-tuned models (Llama-2, Claude), which our 2026 run amplifies into "0% on most frontier models." The single-chain search is also less thorough than it could be &mdash; a limitation <i>already addressed</i> by Tree of Attacks (TAP), which adds branching and pruning and reports higher ASR at a similar query budget. The judge-reliability problem we hit is partially addressed by HarmBench's trained classifier and by JailbreakBench's evolving judge, but as our refusal-aware prompt shows, prompt specification still matters more than classifier choice.</p>
+
+<div class="key">
+<b>Three findings from 2023 that still hold in 2026:</b><br>
+1. <b>Adaptive &raquo; static</b> &mdash; per-behavior refinement (56%) crushes static templates (0%).<br>
+2. <b>Alignment, not openness, drives robustness</b> &mdash; closed Gemini is 0% while open Qwen3-235B is the only vulnerable main target.<br>
+3. <b>Jailbreaks don't transfer to robust models</b> &mdash; 0% transfer to Gemini, matching its 0% direct ASR.<br>
+<span class="small">&hellip;plus two new ones: PAIR's <i>direct</i> efficacy has largely degraded on frontier models, yet <i>transfer</i> attacks remain potent on at least one "direct-robust" model &mdash; and the judge inflates ASR most for the best-aligned models.</span>
+</div>
+
+<p class="small" style="margin-top:36px; border-top:1px solid var(--line); padding-top:14px;">
+Reproduction of Chao et al., <i>"Jailbreaking Black Box Large Language Models in Twenty Queries,"</i> arXiv:2310.08419 (2023). Course project for DSC 291: Trustworthy Machine Learning, UC San Diego, Spring 2026. All harmful prompts and outputs are described structurally rather than reproduced; this write-up is intended to support defensive red-teaming research.
+</p>
+
+</body>
+</html>
